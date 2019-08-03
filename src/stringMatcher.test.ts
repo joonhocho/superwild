@@ -1,3 +1,4 @@
+// tslint:disable no-console
 import { getWildcardStringMatcher } from './stringMatcher';
 
 test('getWildcardStringMatcher', () => {
@@ -83,4 +84,17 @@ test('getWildcardStringMatcher', () => {
   run('**aaaa*aaa*', 'aaaaaaa', true);
   run('**aa*aa*aaa*', 'aaaaaaa', true);
   run('**aaaaa*aaa*', 'aaaaaaa', false);
+});
+
+test.skip('getWildcardStringMatcher benchmark', () => {
+  const compiled = getWildcardStringMatcher('/foo/???/bar/*/baz');
+  const n = 1000000;
+  let r1 = false;
+
+  const t1 = Date.now();
+  for (let i = 0; i < n; i += 1) {
+    r1 = compiled('/foo/123/bar/234/345/baz');
+  }
+  const t2 = Date.now();
+  console.log(t2 - t1, (t2 - t1) / n, r1);
 });
