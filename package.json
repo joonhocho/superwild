@@ -1,6 +1,6 @@
 {
   "name": "superwild",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Extremely fast, optimized, compilable wildcard pattern matching without using RegExp (slow) with zero dependencies",
   "keywords": [
     "lightweight",
