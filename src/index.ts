@@ -9,4 +9,4 @@ export {
   WildcardPathMatcher,
   getWildcardStringPathMatcher,
 } from './pathMatcher';
-export { getWildcardStringMatcher } from './stringMatcher';
+export { MatchString, getWildcardStringMatcher } from './stringMatcher';

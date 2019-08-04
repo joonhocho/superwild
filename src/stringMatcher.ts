@@ -1,12 +1,18 @@
 // tslint:disable-next-line typedef
 const getIsEqual = <T>(x: T) => (y: any): boolean => x === y;
 
+const returnTrue = (): boolean => true;
+
 // * matches 0 or more chars
 // ? matches exactly 1 char
 
-export const getWildcardStringMatcher = (
-  pattern: string
-): ((match: string) => boolean) => {
+export type MatchString = (match: string) => boolean;
+
+export const getWildcardStringMatcher = (pattern: string): MatchString => {
+  if (pattern === '*') {
+    return returnTrue;
+  }
+
   const segments: string[] = [];
   let starCount = 0;
   let minLength = 0;
