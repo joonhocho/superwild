@@ -16,6 +16,47 @@ const w01 = '*?';
 const w0p = '**';
 const w1p = '*+';
 
+interface ICandidateSet {
+  [key: string]: boolean;
+}
+
+const getCandidateSet = (str: string): ICandidateSet => {
+  const candidates = str.split('|');
+  const set: ICandidateSet = {};
+  for (let i = 0, len = candidates.length; i < len; i += 1) {
+    set[candidates[i]] = true;
+  }
+  return set;
+};
+
+enum SegMatchType {
+  In = 1,
+  NotIn,
+}
+
+const { In, NotIn } = SegMatchType;
+
+type ISegmentMatcher = [SegMatchType, ICandidateSet];
+
+const isSegmentMismatch = (
+  pattern: string | ISegmentMatcher,
+  match: string
+): boolean => {
+  if (pattern !== match) {
+    if (pattern === w) {
+      return match === w01 || match === w0p || match === w1p;
+    }
+    if (pattern[0] === In) {
+      return (pattern[1] as ICandidateSet)[match] !== true;
+    }
+    if (pattern[0] === NotIn) {
+      return (pattern[1] as ICandidateSet)[match] === true;
+    }
+    return true;
+  }
+  return false;
+};
+
 export class WildcardPathMatcher {
   public minLength: number;
   public maxLength: number;
@@ -23,10 +64,10 @@ export class WildcardPathMatcher {
   public segments: string[];
 
   // before double wildcard
-  public left: string[];
+  public left: Array<string | ISegmentMatcher>;
 
   // after double wildcard
-  public right: string[];
+  public right: Array<string | ISegmentMatcher>;
 
   // double wildcard
   public dw: typeof w01 | typeof w0p | typeof w1p | null = null;
@@ -38,12 +79,12 @@ export class WildcardPathMatcher {
     let minLength = 0;
     let maxLength = 0;
     let dwCount = 0;
-    const left: string[] = [];
-    const right: string[] = [];
+    const left: Array<string | ISegmentMatcher> = [];
+    const right: Array<string | ISegmentMatcher> = [];
 
     for (let i = 0, len = segments.length; i < len; i += 1) {
-      const part = segments[i];
-      switch (part) {
+      const seg = segments[i];
+      switch (seg) {
         case w01:
           // 0 or 1
           maxLength += 1;
@@ -51,7 +92,7 @@ export class WildcardPathMatcher {
             throw new Error(tooWild);
           }
           dwCount += 1;
-          this.dw = part;
+          this.dw = seg;
           break;
         case w0p:
           // 0 or more
@@ -61,7 +102,7 @@ export class WildcardPathMatcher {
             throw new Error(tooWild);
           }
           dwCount += 1;
-          this.dw = part;
+          this.dw = seg;
           break;
         case w1p:
           // 1 or more
@@ -71,18 +112,29 @@ export class WildcardPathMatcher {
             throw new Error(tooWild);
           }
           dwCount += 1;
-          this.dw = part;
+          this.dw = seg;
           break;
         case w:
           // 1
           minLength += 1;
           maxLength += 1;
-          (dwCount > 0 ? right : left).push(part);
+          (dwCount > 0 ? right : left).push(seg);
           break;
-        default:
+        default: {
+          let item: string | ISegmentMatcher = seg;
+          if (seg[seg.length - 1] === ')') {
+            if (seg[0] === '(') {
+              // in set
+              item = [In, getCandidateSet(seg.substring(1, seg.length - 1))];
+            } else if (seg[0] === '!' && seg[1] === '(') {
+              // not in set
+              item = [NotIn, getCandidateSet(seg.substring(2, seg.length - 1))];
+            }
+          }
           minLength += 1;
           maxLength += 1;
-          (dwCount > 0 ? right : left).push(part);
+          (dwCount > 0 ? right : left).push(item);
+        }
       }
     }
 
@@ -139,23 +191,13 @@ export class WildcardPathMatcher {
     }
 
     for (let i = 0; i < wildStart; i += 1) {
-      const item = left[i];
-      const mItem = match[i];
-      if (
-        item !== mItem &&
-        (item !== w || (mItem === w01 || mItem === w0p || mItem === w1p))
-      ) {
+      if (isSegmentMismatch(left[i], match[i])) {
         return false;
       }
     }
 
     for (let i = 0, len = afterLen; i < len; i += 1) {
-      const item = right[i];
-      const mItem = match[wildEndAfter + i];
-      if (
-        item !== mItem &&
-        (item !== w || (mItem === w01 || mItem === w0p || mItem === w1p))
-      ) {
+      if (isSegmentMismatch(right[i], match[wildEndAfter + i])) {
         return false;
       }
     }
@@ -171,7 +213,7 @@ export const getWildcardStringPathMatcher = (
   if (pattern === w0p) {
     return returnTrue;
   }
-  if (pattern.indexOf(w) === -1) {
+  if (pattern.indexOf(w) === -1 && pattern.indexOf(')') === -1) {
     return (match: string): boolean => match === pattern;
   }
   const matcher = new WildcardPathMatcher(pattern.split(separator));

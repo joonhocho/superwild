@@ -5,21 +5,45 @@ import {
 } from './pathMatcher';
 
 test('WildcardPathMatcher', () => {
-  const matcher = new WildcardPathMatcher(['a', '**', 'b', '*', 'c']);
-  expect(matcher.match(['a', 'b', 'xx', 'c'])).toBe(true);
-  expect(matcher.match(['a', 'b', 'c'])).toBe(false);
-  expect(matcher.match(['a', 'xx', 'b', 'xx', 'c'])).toBe(true);
-  expect(matcher.match(['a', 'xx', 'xx', 'b', 'c', 'c'])).toBe(true);
-  expect(matcher.match(['a', 'xx', 'xx', 'b', 'xx', 'c'])).toBe(true);
-  expect(matcher.match(['xx', 'xx', 'b', 'xx', 'c'])).toBe(false);
-  expect(matcher.match(['a', 'xx', 'c'])).toBe(false);
-  expect(matcher.match(['a', 'b', 'c'])).toBe(false);
-  expect(matcher.match(['a', 'b', 'xx', 'c'])).toBe(true);
-  expect(matcher.match(['a', 'b', 'xx', 'xx', 'c'])).toBe(false);
-  expect(matcher.match(['a', 'b', 'xx', 'c', 'd'])).toBe(false);
-  expect(matcher.match(['a', 'b', 'c', 'c'])).toBe(true);
-  expect(matcher.match(['a', 'b', 'b', 'c'])).toBe(true);
-  expect(matcher.match(['a', 'b', 'b', 'b', 'b', 'c'])).toBe(true);
+  const matcher = new WildcardPathMatcher([
+    'a',
+    '**',
+    '(b|d)',
+    '*',
+    '!(e|f)',
+    'c',
+  ]);
+
+  expect(matcher.match(['a', 'b', 'xx', 'g', 'c'])).toBe(true);
+  expect(matcher.match(['a', 'd', 'xy', 'g', 'c'])).toBe(true);
+  expect(matcher.match(['a', 'd', 'xz', 'h', 'c'])).toBe(true);
+
+  // (b|d)
+  expect(matcher.match(['a', 'e', 'xx', 'g', 'c'])).toBe(false);
+
+  // !(e|f)
+  expect(matcher.match(['a', 'd', 'xx', 'e', 'c'])).toBe(false);
+
+  // *
+  expect(matcher.match(['a', 'b', 'g', 'c'])).toBe(false);
+
+  expect(matcher.match(['a', 'xx', 'b', 'xx', 'g', 'c'])).toBe(true);
+
+  expect(matcher.match(['a', 'xx', 'xx', 'b', 'c', 'g', 'c'])).toBe(true);
+
+  expect(matcher.match(['a', 'xx', 'xx', 'b', 'xx', 'g', 'c'])).toBe(true);
+
+  // a
+  expect(matcher.match(['xx', 'xx', 'b', 'xx', 'g', 'c'])).toBe(false);
+
+  expect(matcher.match(['a', 'xx', 'g', 'c'])).toBe(false);
+  expect(matcher.match(['a', 'b', 'g', 'c'])).toBe(false);
+  expect(matcher.match(['a', 'b', 'xx', 'g', 'c'])).toBe(true);
+  expect(matcher.match(['a', 'b', 'xx', 'xx', 'g', 'c'])).toBe(false);
+  expect(matcher.match(['a', 'b', 'xx', 'c', 'g', 'd'])).toBe(false);
+  expect(matcher.match(['a', 'b', 'c', 'g', 'c'])).toBe(true);
+  expect(matcher.match(['a', 'b', 'b', 'g', 'c'])).toBe(true);
+  expect(matcher.match(['a', 'b', 'b', 'b', 'b', 'g', 'c'])).toBe(true);
 });
 
 test('getWildcardStringPathMatcher.match', () => {
@@ -31,6 +55,10 @@ test('getWildcardStringPathMatcher.match', () => {
   run('/a/b/c/*', '/a/b/c/', true);
   run('/a/b/c', 'a/b/c', false);
   run('*/a/b/c', '/a/b/c', true);
+
+  run('/a/(b|d)/c', '/a/b/c', true);
+  run('/a/(b|d)/c', '/a/d/c', true);
+  run('/a/(b|d)/c', '/a/e/c', false);
 
   run('/a/*?/b/c', '/a/b/c', true);
   run('/a/*?/b/c', '/a/x/b/c', true);
@@ -105,7 +133,7 @@ test('getWildcardStringPathMatcher.match', () => {
 });
 
 test.skip('getWildcardStringPathMatcher benchmark', () => {
-  const compiled = getWildcardStringPathMatcher('/foo/*/bar/**/baz');
+  const compiled = getWildcardStringPathMatcher('/foo/*/(bar|dar)/**/baz');
   const n = 1000000;
   let r1 = false;
 
