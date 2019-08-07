@@ -1,6 +1,9 @@
 export const startsWith = (str: string, prefix: string): boolean =>
   str.lastIndexOf(prefix, 0) === 0;
 
+export const endsWith = (str: string, suffix: string): boolean =>
+  str.indexOf(suffix, str.length - suffix.length) !== -1;
+
 export interface IPathParams {
   [key: string]: number | string | undefined;
 }
@@ -12,6 +15,7 @@ export type BuildPath<Params extends IPathParams = IPathParams> = (
 export interface ICompilePathOptions {
   nilParam?: string;
   paramPrefix?: string;
+  paramSuffix?: string;
   separator?: string;
 }
 
@@ -40,6 +44,7 @@ export const compilePathWithParams = <Params extends IPathParams = IPathParams>(
   options?: ICompilePathOptions
 ): BuildPath<Params> => {
   const paramPrefix = (options && options.paramPrefix) || '$';
+  const paramSuffix = (options && options.paramSuffix) || '';
   const separator = (options && options.separator) || '/';
   const nilParam = (options && options.nilParam) || '*';
 
@@ -51,18 +56,21 @@ export const compilePathWithParams = <Params extends IPathParams = IPathParams>(
 
   for (let i = 0, len = parts.length; i < len; i += 1) {
     const part = parts[i];
-    if (startsWith(part, paramPrefix)) {
+    if (startsWith(part, paramPrefix) && endsWith(part, paramSuffix)) {
       // is variable
       if (toCombine.length) {
         optimizedParts.push(toCombine.join(separator));
         toCombine = [];
       }
-      optimizedParts.push(part.substring(paramPrefix.length));
+      optimizedParts.push(
+        part.substring(paramPrefix.length, part.length - paramSuffix.length)
+      );
       varIndexes.push(optimizedParts.length - 1);
     } else {
       toCombine.push(part);
     }
   }
+
   if (toCombine.length) {
     optimizedParts.push(toCombine.join(separator));
     toCombine = null;

@@ -39,13 +39,25 @@ test('compilePathWithParams', () => {
       cId: 0 as any,
     })
   ).toBe('__foo__NUL__bar__NUL__post____c__0__vote');
+
+  expect(
+    compilePathWithParams('/a/${b}/$c/${d/', {
+      paramPrefix: '${',
+      paramSuffix: '}',
+    })({
+      a: 1,
+      b: 2,
+      c: 3,
+      d: 4,
+    })
+  ).toBe('/a/2/$c/${d/');
 });
 
-test.skip('compilePathWithParams benchmark vs replace vs regexp', () => {
+test('compilePathWithParams benchmark vs replace vs regexp', () => {
   const compiled = compilePathWithParams(
     '/foo/$fooId/bar/$barId/p/$pId/c/$cId/vote'
   );
-  const n = 1000000;
+  const n = 1000;
   const barId = 'BID';
   const pId = 'PID';
   const cId = 'CID';
