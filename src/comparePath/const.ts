@@ -15,14 +15,6 @@ export enum SegmentType {
   NotOr,
 }
 
-export enum CompareResult {
-  Disjoint = 0,
-  Intersect,
-  Subset,
-  Identity,
-  Superset,
-}
-
 export interface IKeySet {
   [key: string]: 1;
 }

@@ -1,6 +1,6 @@
 // tslint:disable no-console
+import { CompareResult } from '_src/compareCommon';
 import { compareRange } from './compareRange';
-import { CompareResult } from './const';
 
 test('compareRange', () => {
   expect(compareRange(0, 1, 0, 1)).toBe(CompareResult.Identity);

@@ -1,6 +1,6 @@
 // tslint:disable no-console
+import { CompareResult } from '_src/compareCommon';
 import { compareParsedSegment } from './compareParsedSegment';
-import { CompareResult } from './const';
 import { ParsedSegment } from './ParsedSegment';
 
 const { Disjoint, Intersect, Subset, Identity, Superset } = CompareResult;

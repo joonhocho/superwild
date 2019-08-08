@@ -1,5 +1,6 @@
 // tslint:disable no-console
-import { CompareResult, SegmentType } from './const';
+import { CompareResult } from '_src/compareCommon';
+import { SegmentType } from './const';
 import { ParsedSegment } from './ParsedSegment';
 
 const { Nil, Value, Wild, Or, NotOr } = SegmentType;

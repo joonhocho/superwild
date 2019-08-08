@@ -1,6 +1,6 @@
 // tslint:disable no-console
+import { CompareResult } from '_src/compareCommon';
 import { compareKeySet } from './compareKeySet';
-import { CompareResult } from './const';
 
 test('compareKeySet', () => {
   expect(compareKeySet({}, {})).toBe(CompareResult.Disjoint);

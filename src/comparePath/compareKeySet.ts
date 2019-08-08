@@ -1,4 +1,5 @@
-import { CompareResult, IKeySet } from './const';
+import { CompareResult } from '_src/compareCommon';
+import { IKeySet } from './const';
 
 const { Disjoint, Intersect, Subset, Identity, Superset } = CompareResult;
 

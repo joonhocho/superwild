@@ -1,34 +1,16 @@
+import {
+  CompareResult,
+  NotOrToNotOr,
+  NotOrToOr,
+  OrToNotOr,
+} from '_src/compareCommon';
 import { compareKeySet } from './compareKeySet';
-import { CompareResult, SegmentType } from './const';
+import { SegmentType } from './const';
 import { ParsedSegment } from './ParsedSegment';
 
-const { Disjoint, Intersect, Subset, Identity, Superset } = CompareResult;
+const { Disjoint, Subset, Identity, Superset } = CompareResult;
 
 const { Value, Wild, Nil, Or, NotOr } = SegmentType;
-
-const OrToNotOr: { [K in CompareResult]: CompareResult } = {
-  [Disjoint]: Subset,
-  [Intersect]: Intersect,
-  [Subset]: Disjoint,
-  [Identity]: Disjoint,
-  [Superset]: Intersect,
-};
-
-const NotOrToOr: { [K in CompareResult]: CompareResult } = {
-  [Disjoint]: Superset,
-  [Intersect]: Intersect,
-  [Subset]: Intersect,
-  [Identity]: Disjoint,
-  [Superset]: Disjoint,
-};
-
-const NotOrToNotOr: { [K in CompareResult]: CompareResult } = {
-  [Disjoint]: Intersect,
-  [Intersect]: Intersect,
-  [Subset]: Superset,
-  [Identity]: Identity,
-  [Superset]: Subset,
-};
 
 export const compareParsedSegment = (
   a: ParsedSegment,

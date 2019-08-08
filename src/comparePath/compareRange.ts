@@ -1,4 +1,4 @@
-import { CompareResult } from './const';
+import { CompareResult } from '_src/compareCommon';
 
 const { Disjoint, Intersect, Subset, Identity, Superset } = CompareResult;
 

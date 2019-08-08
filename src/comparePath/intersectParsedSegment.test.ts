@@ -1,5 +1,5 @@
 // tslint:disable no-console
-import { CompareResult } from './const';
+import { CompareResult } from '_src/compareCommon';
 import { intersectParsedSegment } from './intersectParsedSegment';
 import { ParsedSegment } from './ParsedSegment';
 

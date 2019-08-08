@@ -14,11 +14,10 @@ export const subsetKeySet = (
   const aLen = aKeys.length;
   const bLen = bKeys.length;
 
-  if (aLen > bLen || aLen === 0) {
+  if (aLen === 0 || bLen === 0) {
     return false;
   }
 
-  // check shorter keys first
   for (let i = 0; i < aLen; i += 1) {
     if (b[aKeys[i]] !== 1) {
       return false;

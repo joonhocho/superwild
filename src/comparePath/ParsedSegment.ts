@@ -1,4 +1,5 @@
-import { CompareResult, EmptySet, SegmentType, w01, w0p, w1 } from './const';
+import { CompareResult } from '_src/compareCommon';
+import { EmptySet, SegmentType, w01, w0p, w1 } from './const';
 
 const { Subset, Identity, Superset } = CompareResult;
 const { Nil, Value, Wild, Or, NotOr } = SegmentType;

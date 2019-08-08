@@ -1,6 +1,7 @@
+import { CompareResult } from '_src/compareCommon';
 import { compareParsedSegment } from './compareParsedSegment';
 import { compareRange } from './compareRange';
-import { CompareResult, EmptySet } from './const';
+import { EmptySet } from './const';
 import { SegmentsMatcher } from './SegmentsMatcher';
 
 const { Disjoint, Intersect, Subset, Identity, Superset } = CompareResult;
