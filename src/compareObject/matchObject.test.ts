@@ -139,6 +139,20 @@ test('matchObject', () => {
       { a: Disjoint, b: Intersect, c: Subset, d: Identity, e: Superset }
     )
   ).toBe('c');
+
+  expect(
+    matchObject(
+      { a: 'a', b: ['a', 'b'], c: ['a', 'b'], d: ['a', 'b'], e: ['a', 'b'] },
+      { a: 'b', b: ['b', 'c'], c: ['a'], d: ['a', 'b'], e: ['a'] },
+      {
+        a: 'disjoint',
+        b: 'intersect',
+        c: 'subset',
+        d: 'identity',
+        e: 'superset',
+      }
+    )
+  ).toBe('c');
 });
 
 test('matchObject benchmark', () => {

@@ -24,6 +24,7 @@ export {
   ObjectMatchRule,
   ObjectPattern,
   ObjectPropExpression,
+  ObjectPropMatchType,
   ObjectPropPattern,
   ObjectPropType,
   ParsedProp,

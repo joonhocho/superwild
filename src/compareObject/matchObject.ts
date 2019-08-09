@@ -4,6 +4,7 @@ import {
   MatchNone,
   ObjectMatchRule,
   ObjectPattern,
+  ObjectPropMatchType,
   ObjectPropPattern,
   WildKey,
 } from './const';
@@ -13,12 +14,19 @@ const { keys: getKeys } = Object;
 
 const { Disjoint, Intersect, Subset, Identity, Superset } = CompareResult;
 
-const ruleMap: { [key in CompareResult]: { [k in CompareResult]?: 1 } } = {
+const ruleMap: {
+  [key in CompareResult | ObjectPropMatchType]: { [k in CompareResult]?: 1 };
+} = {
   [Disjoint]: { [Disjoint]: 1 },
+  disjoint: { [Disjoint]: 1 },
   [Intersect]: { [Intersect]: 1, [Subset]: 1, [Identity]: 1, [Superset]: 1 },
+  intersect: { [Intersect]: 1, [Subset]: 1, [Identity]: 1, [Superset]: 1 },
   [Subset]: { [Subset]: 1, [Identity]: 1 },
+  subset: { [Subset]: 1, [Identity]: 1 },
   [Identity]: { [Identity]: 1 },
+  identity: { [Identity]: 1 },
   [Superset]: { [Identity]: 1, [Superset]: 1 },
+  superset: { [Identity]: 1, [Superset]: 1 },
 };
 
 export const matchObject = <Key extends string = string>(
@@ -38,7 +46,7 @@ export const matchObject = <Key extends string = string>(
         }
       }
 
-      let rule: CompareResult | undefined = rules[key];
+      let rule: CompareResult | ObjectPropMatchType | undefined = rules[key];
       if (rule == null) {
         rule = rules[WildKey];
         if (rule == null) {
@@ -69,7 +77,7 @@ export const matchObject = <Key extends string = string>(
         v1 = MatchNone;
       }
 
-      let rule: CompareResult | undefined = rules[key];
+      let rule: CompareResult | ObjectPropMatchType | undefined = rules[key];
       if (rule == null) {
         rule = rules[WildKey];
         if (rule == null) {

@@ -27,10 +27,17 @@ export type ObjectPattern<Key extends string = string> = {
   [WildKey]?: ObjectPropPattern;
 };
 
+export type ObjectPropMatchType =
+  | 'disjoint'
+  | 'intersect'
+  | 'subset'
+  | 'identity'
+  | 'superset';
+
 export type ObjectMatchRule<Key extends string = string> = {
-  [key in Key]?: CompareResult;
+  [key in Key]?: CompareResult | ObjectPropMatchType;
 } & {
-  [WildKey]?: CompareResult;
+  [WildKey]?: CompareResult | ObjectPropMatchType;
 };
 
 export enum ObjectPropType {
