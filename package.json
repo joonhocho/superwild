@@ -30,7 +30,7 @@
   "types": "lib/index.d.ts",
   "sideEffects": false,
   "scripts": {
-    "all": "npm run clean && npm run build:index && npm run format && npm run lint:fix && npm run build:all && npm run test",
+    "all": "npm run clean && npm run format && npm run lint:fix && npm run build:all && npm run test",
     "build:all": "npm run build:module && npm run build:node && npm run build:browser",
     "build:browser": "tsc -p ./tsconfig.browser.json && tscpaths -p ./tsconfig.browser.json -s ./src -o ./dist/browser",
     "build:index": "tstf genIndex -o src/index.ts -w",
@@ -55,7 +55,7 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.17",
-    "@types/node": "^12.7.0",
+    "@types/node": "^12.7.1",
     "coveralls": "^3.0.6",
     "jest": "^24.8.0",
     "pre-commit": "^1.2.2",
